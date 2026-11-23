@@ -1,0 +1,33 @@
+{
+  "conditions": [],
+  "parameters": {
+    "scam_patterns": {
+      "defaultValue": {
+        "value": "{\"version\":\"2026-11-23\",\"weights\":{\"FEE_OR_DEPOSIT\":55,\"OFF_PLATFORM_CHAT\":25,\"FREE_MAIL_OR_LOOKALIKE\":30,\"PAY_TOO_GOOD\":25,\"TASK_PAYMENTS\":45,\"URGENCY_PRESSURE\":15,\"EARLY_ID_OR_BANK\":30,\"NO_INTERVIEW\":20},\"rules\":[{\"sign\":\"FEE_OR_DEPOSIT\",\"re\":\"\\\\b(registration|joining|processing|onboarding|training|verification|security|kit|laptop|document(ation)?|interview|visa)\\\\s+(fee|fees|charge|charges|amount|deposit)\\\\b\"},{\"sign\":\"FEE_OR_DEPOSIT\",\"re\":\"\\\\brefundable\\\\s+(fee|deposit|amount)\\\\b\"},{\"sign\":\"FEE_OR_DEPOSIT\",\"re\":\"\\\\b(pay|deposit|transfer|send)\\\\s+(rs\\\\.?|inr|₹|\\\\$|usd)?\\\\s?[\\\\d,]+\"},{\"sign\":\"FEE_OR_DEPOSIT\",\"re\":\"\\\\b(prepaid|pre-paid|recharge)\\\\s+(task|tasks|order|orders)\\\\b\"},{\"sign\":\"OFF_PLATFORM_CHAT\",\"re\":\"\\\\b(telegram|whats\\\\s?app|signal app|t\\\\.me/|wa\\\\.me/)\"},{\"sign\":\"TASK_PAYMENTS\",\"re\":\"\\\\b(per|each)\\\\s+(like|review|rating|task|subscribe|follow|video)\\\\b\"},{\"sign\":\"TASK_PAYMENTS\",\"re\":\"\\\\b(like|rate|review|subscribe to)\\\\s+(youtube|google|hotel|product|movie|video|map)s?\\\\b\"},{\"sign\":\"URGENCY_PRESSURE\",\"re\":\"\\\\b(within|in)\\\\s+(\\\\d+|24|48|few)\\\\s*(hours?|hrs?|minutes?|mins?)\\\\b\"},{\"sign\":\"URGENCY_PRESSURE\",\"re\":\"\\\\b(limited\\\\s+(seats|slots|vacancies|positions)|offer\\\\s+(will\\\\s+be|is)\\\\s+(cancelled|canceled|withdrawn)|urgent(ly)?\\\\s+(joining|reply|requirement)|reply\\\\s+(today|immediately|asap))\\\\b\"},{\"sign\":\"EARLY_ID_OR_BANK\",\"re\":\"\\\\b(aadhaar|aadhar|pan\\\\s*card|pan\\\\s+number|passport\\\\s+(copy|number)|bank\\\\s+(details|account|statement|passbook)|cancel(l)?ed\\\\s+cheque|upi\\\\s+pin|otp|cvv|atm\\\\s+card)\\\\b\"},{\"sign\":\"NO_INTERVIEW\",\"re\":\"\\\\b(no|without)\\\\s+(interview|test|experience\\\\s+and\\\\s+interview)\\\\b\"},{\"sign\":\"NO_INTERVIEW\",\"re\":\"\\\\b(you\\\\s+(are|have\\\\s+been)\\\\s+(selected|shortlisted|hired))\\\\b\"},{\"sign\":\"PAY_TOO_GOOD\",\"re\":\"\\\\b(daily|per\\\\s+day)\\\\s+(income|earning|earnings|payment|salary)\\\\b\"},{\"sign\":\"PAY_TOO_GOOD\",\"re\":\"\\\\bearn\\\\s+(rs\\\\.?|inr|₹|\\\\$)?\\\\s?[\\\\d,]+\\\\s*(-|to)?\\\\s*[\\\\d,]*\\\\s*(per|a|every|daily|/)\\\\s*(day|hour|hr)\\\\b\"}],\"freeMailDomains\":[\"gmail.com\",\"googlemail.com\",\"yahoo.com\",\"yahoo.co.in\",\"yahoo.in\",\"ymail.com\",\"outlook.com\",\"hotmail.com\",\"live.com\",\"msn.com\",\"rediffmail.com\",\"aol.com\",\"icloud.com\",\"me.com\",\"proton.me\",\"protonmail.com\",\"zoho.com\",\"zohomail.in\",\"gmx.com\",\"mail.com\",\"yandex.com\",\"tutanota.com\"],\"brands\":[{\"name\":\"Amazon\",\"domains\":[\"amazon.com\",\"amazon.in\",\"amazon.jobs\"]},{\"name\":\"Flipkart\",\"domains\":[\"flipkart.com\"]},{\"name\":\"Google\",\"domains\":[\"google.com\"]},{\"name\":\"Microsoft\",\"domains\":[\"microsoft.com\"]},{\"name\":\"Tata Consultancy Services\",\"domains\":[\"tcs.com\"]},{\"name\":\"Infosys\",\"domains\":[\"infosys.com\"]},{\"name\":\"Wipro\",\"domains\":[\"wipro.com\"]},{\"name\":\"HCLTech\",\"domains\":[\"hcltech.com\",\"hcl.com\"]},{\"name\":\"Tech Mahindra\",\"domains\":[\"techmahindra.com\"]},{\"name\":\"Accenture\",\"domains\":[\"accenture.com\"]},{\"name\":\"Deloitte\",\"domains\":[\"deloitte.com\"]},{\"name\":\"Cognizant\",\"domains\":[\"cognizant.com\"]},{\"name\":\"Capgemini\",\"domains\":[\"capgemini.com\"]},{\"name\":\"IBM\",\"domains\":[\"ibm.com\"]},{\"name\":\"Reliance\",\"domains\":[\"ril.com\",\"jio.com\"]},{\"name\":\"Swiggy\",\"domains\":[\"swiggy.in\",\"swiggy.com\"]},{\"name\":\"Zomato\",\"domains\":[\"zomato.com\"]},{\"name\":\"Meesho\",\"domains\":[\"meesho.com\"]},{\"name\":\"Paytm\",\"domains\":[\"paytm.com\"]},{\"name\":\"Airtel\",\"domains\":[\"airtel.com\",\"airtel.in\"]},{\"name\":\"LinkedIn\",\"domains\":[\"linkedin.com\"]},{\"name\":\"Naukri\",\"domains\":[\"naukri.com\",\"infoedge.in\"]}]}"
+      },
+      "description": "Weekly scam-pattern list (rules, weights, free-mail domains, brands). Validated in the app; bad values fall back to built-in defaults.",
+      "valueType": "JSON"
+    },
+    "cloud_model": {
+      "defaultValue": {
+        "value": "gemini-3.5-flash-lite"
+      },
+      "description": "Cloud Gemini model used for fallback reading and the grounded company check.",
+      "valueType": "STRING"
+    },
+    "search_grounding": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Turn on Google Search grounding for the company check. Needs a billing-enabled (Blaze) project; on the free plan the app uses Gemini without live Search.",
+      "valueType": "BOOLEAN"
+    },
+    "cloud_fallback_models": {
+      "defaultValue": {
+        "value": "[\"gemini-3.5-flash\",\"gemini-flash-lite-latest\"]"
+      },
+      "description": "Cloud models tried in order when the main model is busy.",
+      "valueType": "JSON"
+    }
+  }
+}

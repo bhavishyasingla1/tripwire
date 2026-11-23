@@ -1,0 +1,54 @@
+rules_version = '2';
+
+// Community reports are stored as SHA-256 hashes only.
+// reports/{hash}          { count, kind, lastAt }
+// reports/{hash}/by/{uid} { at }   one report per anonymous user per identifier
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validHash(h) {
+      return h.matches('^[a-f0-9]{64}$');
+    }
+
+    function myReport(h) {
+      return /databases/$(database)/documents/reports/$(h)/by/$(request.auth.uid);
+    }
+
+    match /reports/{h} {
+      // Look up one hash at a time; nobody can list the collection.
+      allow get: if signedIn() && validHash(h);
+      allow list: if false;
+
+      allow create: if signedIn() && validHash(h)
+        && request.resource.data.keys().hasOnly(['count', 'kind', 'lastAt'])
+        && request.resource.data.count == 1
+        && request.resource.data.kind in ['domain', 'email', 'phone', 'upi', 'handle']
+        && request.resource.data.lastAt == request.time
+        && !exists(myReport(h)) && existsAfter(myReport(h));
+
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'lastAt'])
+        && request.resource.data.count == resource.data.count + 1
+        && request.resource.data.lastAt == request.time
+        && !exists(myReport(h)) && existsAfter(myReport(h));
+
+      allow delete: if false;
+
+      match /by/{uid} {
+        allow get: if signedIn() && request.auth.uid == uid;
+        allow create: if signedIn() && request.auth.uid == uid && validHash(h)
+          && request.resource.data.keys().hasOnly(['at'])
+          && request.resource.data.at == request.time;
+        allow list, update, delete: if false;
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

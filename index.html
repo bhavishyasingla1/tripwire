@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tripwire · Check a job offer without sending it anywhere</title>
+    <meta name="description" content="Tripwire checks recruiter messages, offer letters and screenshots for job-scam signs with Gemini Nano on your own device. Only blanked-out text goes to the cloud to check the company." />
+    <meta name="theme-color" content="#0E1116" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <meta property="og:title" content="Tripwire: check a job offer without sending it anywhere" />
+    <meta property="og:description" content="Gemini Nano reads the message on your device. Only blanked-out text goes to the cloud." />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Tripwire home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 20h9l3-8 3 12 3-8h8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Tripwire</span>
+      </a>
+      <div id="device-chip" class="chip chip-muted" role="status" aria-live="polite">Checking this device…</div>
+      <nav class="toplinks">
+        <a href="#how">How it works</a>
+        <a id="repo-link" href="https://github.com/" target="_blank" rel="noopener">Code</a>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <section class="work">
+        <div class="intro">
+          <h1>Is this job offer real?</h1>
+          <p class="lede">Paste a recruiter message, an offer letter or a chat screenshot. <strong>Gemini Nano reads it on your computer.</strong> Only a blanked-out summary goes to the cloud to check the company.</p>
+        </div>
+
+        <div class="card input-card" id="input-card">
+          <div class="tabs" role="tablist">
+            <button role="tab" class="tab active" data-mode="text" aria-selected="true">Paste text</button>
+            <button role="tab" class="tab" data-mode="image" aria-selected="false">Screenshot</button>
+          </div>
+          <div class="mode mode-text">
+            <label class="sr-only" for="message">Message to check</label>
+            <textarea id="message" rows="9" placeholder="Paste the message here: WhatsApp, Telegram, email, LinkedIn or SMS…" spellcheck="false"></textarea>
+          </div>
+          <div class="mode mode-image" hidden>
+            <label class="drop" id="drop">
+              <input type="file" id="file" accept="image/png,image/jpeg,image/webp" hidden />
+              <img id="preview" alt="" hidden />
+              <span class="drop-hint" id="drop-hint"><strong>Drop a screenshot</strong>, paste it (Ctrl/Cmd+V) or click to choose. PNG or JPG.</span>
+            </label>
+          </div>
+          <div class="input-foot">
+            <div class="samples">
+              <span class="samples-label">Try a sample:</span>
+              <span id="sample-buttons"></span>
+            </div>
+            <button id="check" class="btn-primary" type="button">Check it</button>
+          </div>
+        </div>
+
+        <div id="results" class="results" hidden>
+          <ol class="steps" id="steps" aria-label="Progress"></ol>
+
+          <div class="card verdict" id="verdict">
+            <div class="verdict-head">
+              <div>
+                <p class="eyebrow" id="verdict-eyebrow">Risk</p>
+                <h2 id="verdict-title">—</h2>
+                <p id="verdict-sub" class="muted"></p>
+              </div>
+              <div class="score" aria-label="Risk score">
+                <span id="score-num">0</span><span class="score-of">/100</span>
+              </div>
+            </div>
+            <div class="wire" aria-hidden="true"><div class="wire-fill" id="wire-fill"></div><div class="wire-mark" id="wire-mark"></div></div>
+            <ul class="signs" id="signs"></ul>
+            <p class="dropped muted" id="dropped" hidden></p>
+          </div>
+
+          <div class="card message-card">
+            <div class="card-head">
+              <h3>The message</h3>
+              <div class="seg" role="tablist" aria-label="View">
+                <button class="seg-btn active" data-view="mine" role="tab" aria-selected="true">What you see</button>
+                <button class="seg-btn" data-view="cloud" role="tab" aria-selected="false">What the cloud saw</button>
+              </div>
+            </div>
+            <div class="message-view" id="message-view"></div>
+            <p class="legend muted"><span class="lg lg-sign"></span>Warning sign <span class="lg lg-pii"></span>Personal detail, blanked before anything leaves your device</p>
+          </div>
+
+          <div class="card company-card" id="company-card" hidden>
+            <div class="card-head">
+              <h3>Company check <span class="tag tag-cloud" id="company-tag">Cloud · Google Search</span></h3>
+              <span class="muted small" id="company-time"></span>
+            </div>
+            <div id="company-body"></div>
+          </div>
+
+          <div class="card next-card" id="next-card">
+            <h3>What to do now</h3>
+            <div id="next-body"></div>
+          </div>
+        </div>
+
+        <section class="how" id="how">
+          <h2>How Tripwire splits the work</h2>
+          <ol class="how-steps">
+            <li><span class="tag tag-device">On device</span><h4>Patterns, instantly</h4><p>A scam-pattern list, updated weekly through Firebase Remote Config, gives a first answer in milliseconds.</p></li>
+            <li><span class="tag tag-device">On device</span><h4>Gemini Nano reads it</h4><p>Through Firebase AI Logic in <code>PREFER_ON_DEVICE</code> mode, Nano finds warning signs, quotes the exact words and spots names. Every quote is checked against the text; invented ones are dropped.</p></li>
+            <li><span class="tag tag-device">On device</span><h4>Personal details blanked</h4><p>Names, phone numbers, UPI IDs, Aadhaar, PAN, bank and card numbers become tokens like <code>[PERSON_1]</code>. The token map never leaves your browser.</p></li>
+            <li><span class="tag tag-cloud">Cloud</span><h4>Company checked in the cloud</h4><p>Only the company name, domains and flagged, blanked lines go to cloud Gemini, with Google Search grounding where the project allows it. Real names are put back on your device.</p></li>
+            <li><span class="tag tag-cloud">Cloud</span><h4>Community, as hashes</h4><p>Scam reports are stored in Firestore as SHA-256 hashes of the sender's details, never the details themselves.</p></li>
+          </ol>
+          <p class="muted small">No Gemini Nano on this computer? Tripwire still works: it blanks personal details first and only then asks cloud Gemini. Screenshots go to the cloud only if you say yes.</p>
+        </section>
+      </section>
+
+      <aside class="ledger card" id="ledger" aria-label="What left your device">
+        <div class="ledger-head">
+          <h2>What left your device</h2>
+          <p class="muted small">Every model call and request, with the exact text sent.</p>
+        </div>
+        <div class="ledger-totals">
+          <div class="total total-device"><span class="total-num" id="tot-device">0</span><span class="total-label">characters read on this device</span></div>
+          <div class="total total-cloud"><span class="total-num" id="tot-cloud">0</span><span class="total-label">characters sent to the cloud</span></div>
+          <div class="total total-blank"><span class="total-num" id="tot-blank">0</span><span class="total-label">personal details kept on this device</span></div>
+        </div>
+        <ol class="ledger-list" id="ledger-list"></ol>
+      </aside>
+    </main>
+
+    <dialog id="consent" class="consent">
+      <form method="dialog">
+        <h3>Send this screenshot to the cloud?</h3>
+        <p>Gemini Nano can't read images in this browser. Tripwire can blank text, but not pixels, so the whole screenshot would go to cloud Gemini through Firebase AI Logic.</p>
+        <p class="muted small">Tip: paste the text instead and personal details will be blanked before anything is sent.</p>
+        <div class="consent-actions">
+          <button value="no" class="btn-ghost">Paste text instead</button>
+          <button value="yes" class="btn-primary">Send screenshot</button>
+        </div>
+      </form>
+    </dialog>
+
+    <footer class="foot">
+      <p>Job scams are growing. The FBI's IC3 logged <strong>24,688</strong> employment-scam complaints with <strong>$362.9M</strong> lost in 2025 (<a href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" target="_blank" rel="noopener">2025 report</a>). In India, Chakshu reports of fake online job, lottery and loan offers rose from <strong>23,634</strong> in 2024 to <strong>58,560</strong> in 2025 (<a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2223779" target="_blank" rel="noopener">PIB, 5 Feb 2026</a>).</p>
+      <p class="muted small">Tripwire gives a second opinion, not a guarantee. Built with Firebase AI Logic for #BuildHybridAI 2026. Apache-2.0.</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

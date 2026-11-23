@@ -1,0 +1,23 @@
+{
+  "name": "tripwire",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tripwire: a fake-job-offer shield. Gemini Nano reads the message on your device; only redacted text reaches the cloud.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "node --test --experimental-strip-types tests/*.test.ts",
+    "deploy": "npm run build && firebase deploy --only hosting,firestore:rules"
+  },
+  "dependencies": {
+    "firebase": "^13.4.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.37.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

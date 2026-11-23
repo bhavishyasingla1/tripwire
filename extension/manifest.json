@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Tripwire: job-offer scam check",
+  "version": "1.0.0",
+  "description": "Right-click a recruiter message in Gmail, LinkedIn or WhatsApp Web and check it with Gemini Nano on your device.",
+  "permissions": ["contextMenus", "storage"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["https://tripwire-shield.web.app/*", "https://tripwire-shield.firebaseapp.com/*"],
+      "js": ["handoff.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": { "default_title": "Tripwire: select a message, right-click, Check with Tripwire" },
+  "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" }
+}
